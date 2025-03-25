@@ -2,7 +2,9 @@ import "@/assets/styles/login.css";
 
 // TODO: add clean navigation and also refactor this sht code
 import { useState } from "react";
-import axios from "axios";
+import { ApiClient } from "@/api/api";
+
+const apiClient = new ApiClient();
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -28,11 +30,7 @@ const Login = () => {
     setIsSubmitting(true);
 
     try {
-      // TODO: use a clean crud api wrapper
-      const response = await axios.post(
-        "http://localhost:5000/api/v1/login",
-        formData
-      );
+      const response = await apiClient.post("login", formData);
 
       // Handle successful login
       console.log(response.data.token);
