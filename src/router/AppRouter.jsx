@@ -12,8 +12,6 @@ const AppRouter = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(isAuthorized);
-    console.log(location);
     if (location.pathname == "/login" && isAuthorized) {
       navigate("/");
     } else if (!isAuthorized && location.pathname != "/login") {

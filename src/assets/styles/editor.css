@@ -70,3 +70,27 @@
 .primary-btn:focus {
   background-color: #f082ac;
 }
+
+.my-table {
+  padding: 12px 24px;
+}
+
+.my-table,
+.my-table table {
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+}
+
+.my-table th {
+  background-color: black;
+  color: white;
+}
+
+.my-table th,
+.my-table td {
+  height: 40px;
+  border: 1px solid #ddd;
+  align-items: center;
+  text-align: center;
+}
