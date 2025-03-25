@@ -1,23 +1,30 @@
 import { useEffect, useContext, useState, createContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { ApiClient } from "@/api/api";
 
 import { getToken, setToken, clearToken } from "@/utils/storage";
 
 const apiClient = new ApiClient();
 
-const AuthContext = createContext();
+const AuthContext = createContext({
+  isAuthorized: false,
+  isLoading: false,
+  login: () => Promise.reject(new Error("login function not implemented")),
+  logout: () => {},
+});
 
+// eslint-disable-next-line react/prop-types
 export const AuthProvider = ({ children }) => {
+  const [isAuthorized, setAuthorized] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const navigation = useNavigate();
 
   useEffect(() => {
     const initAuth = async () => {
       const token = getToken();
       // TODO: verify token with backend
       if (token) {
-        console.log("token verified");
+        setAuthorized(true);
+      } else {
+        setAuthorized(false);
       }
     };
 
@@ -27,23 +34,36 @@ export const AuthProvider = ({ children }) => {
   const login = async (credential) => {
     if (isLoading) return;
     setIsLoading(true);
-    const response = await apiClient.post("login", credential);
-    setToken(response.data.token);
+    try {
+      const response = await apiClient.post("login", credential);
+      setToken(response.data.token);
+      setAuthorized(true);
+    } catch (error) {
+      console.log(error);
+    }
     setIsLoading(false);
-    navigation("/home");
   };
 
   const logout = () => {
     clearToken();
-    navigation("/login");
+    setAuthorized(false);
   };
 
-  return (
-    <AuthContext.Provider value={{ isLoading, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const value = {
+    isAuthorized,
+    isLoading,
+    login,
+    logout,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 // TODO: what is fast refresh
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};

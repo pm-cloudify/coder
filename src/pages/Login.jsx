@@ -2,11 +2,11 @@ import "@/assets/styles/login.css";
 
 // TODO: add clean navigation and also refactor this sht code
 import { useState } from "react";
-import { ApiClient } from "@/api/api";
-
-const apiClient = new ApiClient();
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
+  const { login } = useAuth();
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -24,25 +24,12 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (isSubmitting) return;
-
     setIsSubmitting(true);
-
     try {
-      const response = await apiClient.post("login", formData);
-
-      // Handle successful login
-      console.log(response.data.token);
-      // localStorage.setItem("authToken", response.data.token);
+      await login(formData);
     } catch (error) {
-      if (error.response) {
-        // The request was made and the server responded with a status code
-      } else if (error.request) {
-        // The request was made but no response was received
-      } else {
-        // Something happened in setting up the request
-      }
+      console.log(error);
     } finally {
       setIsSubmitting(false);
     }
