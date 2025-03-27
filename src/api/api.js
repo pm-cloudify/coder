@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getToken } from "@/utils/storage";
+import { getToken, clearToken } from "@/utils/storage";
 
 // TODO: read defaults from env
 
@@ -43,6 +43,13 @@ export class ApiClient {
     });
   }
 
+  errorHandler(error) {
+    if (error?.response?.status == 401) {
+      clearToken();
+      window.location = "/login";
+    }
+  }
+
   /**
    * get request
    * @param {string} url
@@ -50,9 +57,11 @@ export class ApiClient {
    * @returns {Promise}
    */
   async get(url = "ping", config = {}) {
-    return this.axiosInstance.get(url, {
-      ...config,
-    });
+    return this.axiosInstance
+      .get(url, {
+        ...config,
+      })
+      .catch((error) => this.errorHandler(error));
   }
 
   /**
@@ -63,9 +72,11 @@ export class ApiClient {
    * @returns {Promise}
    */
   async post(url, data = null, config = {}) {
-    return this.axiosInstance.post(url, data, {
-      ...config,
-    });
+    return this.axiosInstance
+      .post(url, data, {
+        ...config,
+      })
+      .catch((error) => this.errorHandler(error));
   }
 
   /**
@@ -76,9 +87,11 @@ export class ApiClient {
    * @returns {Promise}
    */
   async put(url, data = null, config = {}) {
-    return this.axiosInstance.put(url, data, {
-      ...config,
-    });
+    return this.axiosInstance
+      .put(url, data, {
+        ...config,
+      })
+      .catch((error) => this.errorHandler(error));
   }
 
   /**
@@ -89,9 +102,11 @@ export class ApiClient {
    * @returns {Promise}
    */
   async patch(url, data = null, config = {}) {
-    return this.axiosInstance.patch(url, data, {
-      ...config,
-    });
+    return this.axiosInstance
+      .patch(url, data, {
+        ...config,
+      })
+      .catch((error) => this.errorHandler(error));
   }
 
   /**
@@ -101,8 +116,10 @@ export class ApiClient {
    * @returns {Promise}
    */
   async delete(url = "ping", config = {}) {
-    return this.axiosInstance.delete(url, {
-      ...config,
-    });
+    return this.axiosInstance
+      .delete(url, {
+        ...config,
+      })
+      .catch((error) => this.errorHandler(error));
   }
 }
