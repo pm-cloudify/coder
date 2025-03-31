@@ -19,3 +19,5 @@ WORKDIR /var/www/
 
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 COPY --from=stage-1 /app/dist /var/www/app
+
+CMD ["nginx", "-g", "daemon off;"]
