@@ -3,6 +3,10 @@ import { getToken, clearToken } from "@/utils/storage";
 
 // TODO: read defaults from env
 
+const BASE_API_URL = import.meta.env.VITE_API_URL
+  ? import.meta.env.VITE_API_URL
+  : window.location.origin;
+
 /**
  * ApiClient is a wrapper to simplify configuring axios to make api calls
  */
@@ -15,7 +19,7 @@ export class ApiClient {
    * @param {object} specified_headers addition headers. it will also replace duplicates.
    */
   constructor(
-    baseAddress = "http://localhost:5000",
+    baseAddress = BASE_API_URL,
     baseApiURL = "api",
     apiVersion = "v1",
     specified_headers = {}
